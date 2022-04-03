@@ -1,15 +1,34 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import type { NextPage } from 'next'
-import styles from '../styles/Home.module.css';
+import { useState } from 'react';
+import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import LogIn from './login';
+import { LoginState } from './login/index-d';
+import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {
+  const [miscState, updateMiscState] = useState<LoginState>({});
+
+  const getCredentials = ({ OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn = miscState?.isLoggedIn }: LoginState) => {
+    updateMiscState({ ...miscState, OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn });
+  };
+
+  const navigateToChat = ({ isLoggedIn = false }) => {
+    if (isLoggedIn) {
+      router.push({
+        pathname: '/chat',
+        query: { ...miscState },
+      }, '/chat');
+    }
+  }
+
+  const { isLoggedIn } = miscState;
+  const router = useRouter();
+  navigateToChat({ isLoggedIn });
+
   return (
     <div className={styles.container}>
-
       <main className={styles.main}>
-        <LogIn />
+        {!isLoggedIn ? <LogIn state={miscState} updateLogin={getCredentials} /> : ''}
       </main>
     </div>
   )
