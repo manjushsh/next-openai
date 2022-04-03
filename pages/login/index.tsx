@@ -8,13 +8,9 @@ const LogIn = ({ state, updateLogin }: any) => {
     const router = useRouter();
     const terminalPayload = router.query;
     console.warn('terminalPayload: ', terminalPayload);
+    
     const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPEN_AI_ORG: e.target.value });
     const openAIAPIKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPENAI_API_KEY: e.target.value });
-
-
-    useEffect(() => {
-        console.clear();
-    });
 
     const onLogIn = ({ OPEN_AI_ORG, OPENAI_API_KEY }: LoginState) => {
         const headers = { "Content-Type": "application/json" };

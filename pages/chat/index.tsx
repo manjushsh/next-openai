@@ -1,8 +1,10 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { ChatFeed, Message } from "react-chat-ui";
 
 const Chat = () => {
     const [miscState, updateMiscState] = useState({}) as any;
+
     const styles = {
         chatBubble: {
             text: {
