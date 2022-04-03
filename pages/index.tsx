@@ -15,9 +15,9 @@ const Home: NextPage = () => {
   const navigateToChat = ({ isLoggedIn = false }) => {
     if (isLoggedIn) {
       router.push({
-        pathname: '/chat',
+        pathname: '/nxt-chat',
         query: { ...miscState },
-      }, '/chat');
+      }, '/nxt-chat');
     }
   }
 

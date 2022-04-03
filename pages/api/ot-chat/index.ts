@@ -1,7 +1,10 @@
 import OpenAIConfig from '../common/config-ai';
+import AI_CONFIG_TYPE from './index-d';
 
-const oneTimeChat = async ({ statement = '', model = 'text-davinci-002' }) => {
-    const OpenAI = OpenAIConfig.configure({});
+const oneTimeChat = async ({ configuration, statement = '', model = 'text-davinci-002' }: AI_CONFIG_TYPE | any) => {
+    console.log("configuration, statement = '' ", configuration, statement);
+
+    const OpenAI = OpenAIConfig.configure({ apiKey: configuration.OPENAI_API_KEY, organization: configuration.OPEN_AI_ORG });
     try {
         const response = await OpenAI.createCompletion(model, {
             prompt: statement,
