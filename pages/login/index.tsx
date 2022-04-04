@@ -36,7 +36,7 @@ const LogIn = ({ state, updateLogin }: any) => {
 
                     <form>
                         <input type="text" id="login" className="fadeIn second" name="login" placeholder="Enter organization ID" onChange={onOrganizationIdChange} />
-                        <input type="text" id="password" className="fadeIn third" name="login" placeholder="Enter open AI API key" onChange={openAIAPIKeyChange} />
+                        <input type="text" id="password" className="fadeIn third" name="key" placeholder="Enter open AI API key" onChange={openAIAPIKeyChange} />
                         <input
                             type="button"
                             className="fadeIn fourth"

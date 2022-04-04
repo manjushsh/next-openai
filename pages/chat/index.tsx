@@ -20,7 +20,7 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
         }
     };
 
-    const getAIAnswer = async ({ statement = '' }) => {
+    const getAIAnswer = async ({ statement = '', messages = [] }: any) => {
         const headers = { "Content-Type": "application/json" };
         const body = JSON.stringify({
             configuration: { OPEN_AI_ORG, OPENAI_API_KEY },
@@ -35,10 +35,13 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
         fetch(finalURL, requestData)
             .then(response => response.json())
             .then(result => {
-                if (result?.data && result?.data.length > 0) {
-                    console.warn('Data: ', result?.data);
+                if (result?.choices && result?.choices.length > 0) {
+                    // updateMiscState({ ...miscState, isTyping: false, aiResponse: result?.data });
+                    console.warn(result);
 
-                    // updateLogin({ ...state, isLoggedIn: true });
+                    // let message = result?.data
+                    messages.push(new Message({ id: 1, message: result?.choices[0].text }))
+                    updateMiscState({ ...miscState, isTyping: false, messages });
                 }
             })
             .catch(error => console.log('error', error));
@@ -52,18 +55,15 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
         else {
             const currentMessages = miscState?.messages || [];
             currentMessages.push(new Message({ id: 0, message: text, }));
-            updateMiscState({ ...miscState, messages: currentMessages, newMessage: '', isTyping: true });
+            updateMiscState({ ...miscState, messages: currentMessages, newMessage: '', isTyping: true, aiResponse: null });
             const { messages } = miscState;
             let context = '';
             if (messages && messages.length > 0) {
                 context = Object.keys(messages).map(message => `${ID_WISE_USER[messages[message].id]}: ${messages[message].message}`).join('\n') || '';
+                await getAIAnswer({ statement: context, messageList: currentMessages });
             }
-            const response = await getAIAnswer({ statement: context });
-            console.warn("response ", response);
         }
     }
-
-    console.warn('statetetete', OPENAI_API_KEY, OPEN_AI_ORG);
 
     return (
         <>
