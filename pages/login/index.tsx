@@ -1,6 +1,4 @@
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { LoginState } from './index-d';
 
 const LogIn = ({ state, updateLogin }: any) => {

@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatFeed, Message } from "react-chat-ui";
-import oneTimeChat from "../api/chat";
+import NavigationService from "../api/common/navigation";
 import { API_AUTH } from "./index-d";
 
 const ID_WISE_USER = ['Human', 'AI'];
 
 const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
     const [miscState, updateMiscState] = useState({}) as any;
+    useEffect(() => {
+        if (!(OPEN_AI_ORG && OPENAI_API_KEY)) {
+            alert(`Couldn't get valid API keys. Please enter credentials again!`)
+            NavigationService.navigateToRoot();
+        }
+    })
 
     const styles = {
         chatBubble: {
