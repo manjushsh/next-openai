@@ -5,7 +5,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { OPEN_AI_ORG, OPENAI_API_KEY } = req.body;
     if (OPEN_AI_ORG && OPENAI_API_KEY) {
         try {
-            const response = await ListEngines({ OPEN_AI_ORG, OPENAI_API_KEY });
+            const response: any = await ListEngines({ OPEN_AI_ORG, OPENAI_API_KEY });
             if (response?.data)
                 return res.status(200).json({ data: response?.data });
         }
