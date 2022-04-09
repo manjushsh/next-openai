@@ -45,7 +45,7 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
                     const aiResponse = new Message({ id: 1, message: data[0].text, });
                     const { messages } = miscState;
                     messages.push(aiResponse);
-                    updateMiscState({ ...miscState, isTyping: false, messages });
+                    updateMiscState({ ...miscState, isTyping: false, newMessage: '', messages });
                 }
             })
             .catch(error => console.log('error', error));
@@ -58,6 +58,11 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
             sendMessage({ text: miscState?.newMessage });
     }
 
+    const updateScroll = () => {
+        const element = document.getElementById("chat-panel")!;
+        window.scrollTo(0, element?.scrollHeight);
+    }
+
     const sendMessage = async ({ text = '' }) => {
         if (text.length <= 0) {
             updateMiscState({ ...miscState, newMessage: '', isTyping: false });
@@ -66,11 +71,13 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
             const currentMessages = miscState?.messages || [];
             currentMessages.push(new Message({ id: 0, message: text, }));
             updateMiscState({ ...miscState, messages: currentMessages, newMessage: '', isTyping: true, aiResponse: null });
+            updateScroll();
             const { messages } = miscState;
             let context = '';
             if (messages && messages.length > 0) {
                 context = Object.keys(messages).map(message => `${ID_WISE_USER[messages[message].id]}: ${messages[message].message}`).join('\n') || '';
                 await getAIAnswer({ statement: context });
+                updateScroll();
             }
         }
     }
