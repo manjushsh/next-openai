@@ -1,5 +1,17 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+
+Open ended conversation with an AI assistant.
+Trying out NextJs with open ai chatbot
+
+
+## References
+- [Next.js](https://nextjs.org/)
+- [Next.js References](https://nextjs.org/learn/foundations/about-nextjs/what-is-nextjs)
+- [OpenAI Docs](https://beta.openai.com/docs/introduction)
+- [Get API Key](https://beta.openai.com/account/api-keys)
+- [Get Organization ID](https://beta.openai.com/account/org-settings)
+
 ## Getting Started
 
 First, run the development server:
