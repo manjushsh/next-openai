@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { ChatFeed, Message } from "react-chat-ui";
 import oneTimeChat from "../api/chat";
 import { API_AUTH } from "./index-d";
@@ -20,7 +20,7 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
         }
     };
 
-    const getAIAnswer = async ({ statement = '', messages = [] }: any) => {
+    const getAIAnswer = async ({ statement = '' }: any) => {
         const headers = { "Content-Type": "application/json" };
         const body = JSON.stringify({
             configuration: { OPEN_AI_ORG, OPENAI_API_KEY },
@@ -32,15 +32,14 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
             body,
         };
         const finalURL = `http://${process?.env?.NEXT_PUBLIC_VERCEL_URL || 'localhost:3000'}/api/chat`;
-        fetch(finalURL, requestData)
+        await fetch(finalURL, requestData)
             .then(response => response.json())
-            .then(result => {
-                if (result?.choices && result?.choices.length > 0) {
-                    // updateMiscState({ ...miscState, isTyping: false, aiResponse: result?.data });
-                    console.warn(result);
-
-                    // let message = result?.data
-                    messages.push(new Message({ id: 1, message: result?.choices[0].text }))
+            .then((result: any) => {
+                const data = result?.data?.choices || null;
+                if (data && data.length > 0) {
+                    const aiResponse = new Message({ id: 1, message: data[0].text, });
+                    const { messages } = miscState;
+                    messages.push(aiResponse);
                     updateMiscState({ ...miscState, isTyping: false, messages });
                 }
             })
@@ -48,6 +47,12 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
     }
 
     const onType = (e: React.ChangeEvent<HTMLInputElement>) => updateMiscState({ ...miscState, newMessage: e.target.value });
+
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter')
+            sendMessage({ text: miscState?.newMessage });
+    }
+
     const sendMessage = async ({ text = '' }) => {
         if (text.length <= 0) {
             updateMiscState({ ...miscState, newMessage: '', isTyping: false });
@@ -60,7 +65,7 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
             let context = '';
             if (messages && messages.length > 0) {
                 context = Object.keys(messages).map(message => `${ID_WISE_USER[messages[message].id]}: ${messages[message].message}`).join('\n') || '';
-                await getAIAnswer({ statement: context, messageList: currentMessages });
+                await getAIAnswer({ statement: context });
             }
         }
     }
@@ -75,15 +80,16 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
                 bubblesCentered={false} //Boolean should the bubbles be centered in the feed?
                 bubbleStyles={styles.chatBubble} // JSON: Custom bubble styles
             />
-            <div className='msg-send' style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignSelf: 'center'
-            }}>
+            <div className='msg-send'>
                 <div className="msg-txt">
-                    <input type={'text'} onChange={onType} value={miscState?.newMessage || ''} placeholder={'Ask something'} />
+                    <input
+                        type={'text'}
+                        onChange={onType}
+                        value={miscState?.newMessage || ''}
+                        onKeyDown={handleKeyDown}
+                        placeholder={'Ask something'} />
                 </div>
-                <div className="msg-btn" style={{ marginLeft: 'auto', margin: 0 }}>
+                <div className="msg-btn" style={{ marginLeft: 'auto', margin: 0, display: 'none' }}>
                     <input
                         type="button"
                         className="fadeIn fourth"
