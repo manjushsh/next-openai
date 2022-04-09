@@ -16,11 +16,11 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
     const styles = {
         chatBubble: {
             text: {
-                fontSize: 30
+                fontSize: 20
             },
             chatbubble: {
-                borderRadius: 70,
-                padding: 40
+                borderRadius: 35,
+                padding: 20
             }
         }
     };
