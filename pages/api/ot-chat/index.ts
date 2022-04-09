@@ -1,5 +1,4 @@
 import OpenAIConfig from '../common/config-ai';
-import AI_CONFIG_TYPE from './index-d';
 
 const defaultParameters = {
     temperature: 0,
@@ -24,3 +23,12 @@ const oneTimeChat = async ({ configuration, statement = '', model = 'text-davinc
     }
 }
 export default oneTimeChat;
+
+interface AI_CONFIG_TYPE {
+    configuration: {
+        OPEN_AI_ORG: string;
+        OPENAI_API_KEY: string;
+    }
+    statement?: string;
+    model?: string;
+}

@@ -1,5 +1,4 @@
 import OpenAIConfig from '../common/config-ai';
-import { ConfigObject } from './index-d';
 
 const ListEngines = async ({ OPEN_AI_ORG, OPENAI_API_KEY }: ConfigObject) => {
     const OpenAI = OpenAIConfig.configure({ organization: OPEN_AI_ORG, apiKey: OPENAI_API_KEY });
@@ -13,3 +12,8 @@ const ListEngines = async ({ OPEN_AI_ORG, OPENAI_API_KEY }: ConfigObject) => {
     }
 }
 export default ListEngines;
+
+interface ConfigObject {
+    OPEN_AI_ORG: string;
+    OPENAI_API_KEY: string;
+}

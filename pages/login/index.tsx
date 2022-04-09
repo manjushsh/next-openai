@@ -1,6 +1,4 @@
 
-import LoginState from './index-d';
-
 const LogIn = ({ state, updateLogin }: any) => {
 
     const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPEN_AI_ORG: e.target.value });
@@ -61,3 +59,9 @@ const CheckMark = ({ fill = "#198754", dimension = "32" }) => {
         </svg>
     )
 }
+
+interface LoginState {
+    OPEN_AI_ORG?: string;
+    OPENAI_API_KEY?: string;
+    isLoggedIn?: true | false;
+};

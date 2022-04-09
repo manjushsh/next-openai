@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ChatFeed, Message } from "react-chat-ui";
 import NavigationService from "../api/common/navigation";
-import API_AUTH from "./index-d";
 
 const ID_WISE_USER = ['Human', 'AI'];
 
@@ -110,3 +109,8 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
 }
 
 export default Chat;
+
+interface API_AUTH {
+    OPEN_AI_ORG?: string;
+    OPENAI_API_KEY?: string;
+}
