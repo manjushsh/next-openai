@@ -1,21 +1,12 @@
 
-import { useEffect, useState } from 'react';
 import { LoginState } from './index-d';
 
-const LogIn = () => {
+const LogIn = ({ state, updateLogin }: any) => {
 
-    const [miscState, updateMiscState] = useState<LoginState>({});
-
-    const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateMiscState({ ...miscState, OPEN_AI_ORG: e.target.value });
-    const openAIAPIKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => updateMiscState({ ...miscState, OPENAI_API_KEY: e.target.value });
-
-
-    useEffect(() => {
-        console.clear();
-    });
+    const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPEN_AI_ORG: e.target.value });
+    const openAIAPIKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPENAI_API_KEY: e.target.value });
 
     const onLogIn = ({ OPEN_AI_ORG, OPENAI_API_KEY }: LoginState) => {
-        console.warn("OPEN_AI_ORG, OPENAI_API_KEY ", OPEN_AI_ORG, OPENAI_API_KEY);
         const headers = { "Content-Type": "application/json" };
         const body = JSON.stringify({ OPEN_AI_ORG, OPENAI_API_KEY });
         const requestData = {
@@ -27,13 +18,17 @@ const LogIn = () => {
         fetch(finalURL, requestData)
             .then(response => response.json())
             .then(result => {
-                if (result?.data && result?.data.length > 0)
-                    updateMiscState({ ...miscState, isLoggedIn: true });
+                if (result?.data && result?.data.length > 0) {
+                    updateLogin({ ...state, isLoggedIn: true });
+                }
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                alert(`Couldn't log you in! Please try again later.`);
+                console.log('error', error)
+            });
     }
 
-    const isLoginDisabled = !(miscState?.OPEN_AI_ORG && miscState?.OPENAI_API_KEY);
+    const isLoginDisabled = !(state?.OPEN_AI_ORG && state?.OPENAI_API_KEY);
     return (
         <>
             <div className="wrapper fadeInDown">
@@ -42,18 +37,14 @@ const LogIn = () => {
 
                     <form>
                         <input type="text" id="login" className="fadeIn second" name="login" placeholder="Enter organization ID" onChange={onOrganizationIdChange} />
-                        <input type="text" id="password" className="fadeIn third" name="login" placeholder="Enter open AI key" onChange={openAIAPIKeyChange} />
+                        <input type="text" id="password" className="fadeIn third" name="key" placeholder="Enter open AI API key" onChange={openAIAPIKeyChange} />
                         <input
                             type="button"
                             className="fadeIn fourth"
-                            value={miscState?.isLoggedIn ? 'Checked In' : 'Continue'}
-                            onClick={!isLoginDisabled ? () => onLogIn({ ...miscState }) : () => { }}
+                            value={state?.isLoggedIn ? 'Checked In' : 'Continue'}
+                            onClick={!isLoginDisabled ? () => onLogIn({ ...state }) : () => { }}
                         />
                     </form>
-
-                    {/* <div id="formFooter">
-                        <a className="underlineHover" href="#">Forgot Password?</a>
-                    </div> */}
 
                 </div>
             </div>
