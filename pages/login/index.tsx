@@ -1,14 +1,8 @@
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { LoginState } from './index-d';
 
 const LogIn = ({ state, updateLogin }: any) => {
 
-    const router = useRouter();
-    const terminalPayload = router.query;
-    console.warn('terminalPayload: ', terminalPayload);
-    
     const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPEN_AI_ORG: e.target.value });
     const openAIAPIKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPENAI_API_KEY: e.target.value });
 
@@ -28,7 +22,10 @@ const LogIn = ({ state, updateLogin }: any) => {
                     updateLogin({ ...state, isLoggedIn: true });
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                alert(`Couldn't log you in! Please try again later.`);
+                console.log('error', error)
+            });
     }
 
     const isLoginDisabled = !(state?.OPEN_AI_ORG && state?.OPENAI_API_KEY);
@@ -40,7 +37,7 @@ const LogIn = ({ state, updateLogin }: any) => {
 
                     <form>
                         <input type="text" id="login" className="fadeIn second" name="login" placeholder="Enter organization ID" onChange={onOrganizationIdChange} />
-                        <input type="text" id="password" className="fadeIn third" name="login" placeholder="Enter open AI API key" onChange={openAIAPIKeyChange} />
+                        <input type="text" id="password" className="fadeIn third" name="key" placeholder="Enter open AI API key" onChange={openAIAPIKeyChange} />
                         <input
                             type="button"
                             className="fadeIn fourth"

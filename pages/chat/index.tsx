@@ -1,9 +1,18 @@
-import { useRouter } from "next/router";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatFeed, Message } from "react-chat-ui";
+import NavigationService from "../api/common/navigation";
+import { API_AUTH } from "./index-d";
 
-const Chat = () => {
+const ID_WISE_USER = ['Human', 'AI'];
+
+const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
     const [miscState, updateMiscState] = useState({}) as any;
+    useEffect(() => {
+        if (!(OPEN_AI_ORG && OPENAI_API_KEY)) {
+            alert(`Couldn't get valid API keys. Please enter credentials again!`)
+            NavigationService.navigateToRoot();
+        }
+    })
 
     const styles = {
         chatBubble: {
@@ -17,18 +26,55 @@ const Chat = () => {
         }
     };
 
+    const getAIAnswer = async ({ statement = '' }: any) => {
+        const headers = { "Content-Type": "application/json" };
+        const body = JSON.stringify({
+            configuration: { OPEN_AI_ORG, OPENAI_API_KEY },
+            statement,
+        });
+        const requestData = {
+            method: 'POST',
+            headers,
+            body,
+        };
+        const finalURL = `http://${process?.env?.NEXT_PUBLIC_VERCEL_URL || 'localhost:3000'}/api/chat`;
+        await fetch(finalURL, requestData)
+            .then(response => response.json())
+            .then((result: any) => {
+                const data = result?.data?.choices || null;
+                if (data && data.length > 0) {
+                    const aiResponse = new Message({ id: 1, message: data[0].text, });
+                    const { messages } = miscState;
+                    messages.push(aiResponse);
+                    updateMiscState({ ...miscState, isTyping: false, messages });
+                }
+            })
+            .catch(error => console.log('error', error));
+    }
+
     const onType = (e: React.ChangeEvent<HTMLInputElement>) => updateMiscState({ ...miscState, newMessage: e.target.value });
-    const sendMessage = ({ text = '' }) => {
+
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter')
+            sendMessage({ text: miscState?.newMessage });
+    }
+
+    const sendMessage = async ({ text = '' }) => {
         if (text.length <= 0) {
             updateMiscState({ ...miscState, newMessage: '', isTyping: false });
         }
         else {
             const currentMessages = miscState?.messages || [];
             currentMessages.push(new Message({ id: 0, message: text, }));
-            updateMiscState({ ...miscState, messages: currentMessages, newMessage: '' });
+            updateMiscState({ ...miscState, messages: currentMessages, newMessage: '', isTyping: true, aiResponse: null });
+            const { messages } = miscState;
+            let context = '';
+            if (messages && messages.length > 0) {
+                context = Object.keys(messages).map(message => `${ID_WISE_USER[messages[message].id]}: ${messages[message].message}`).join('\n') || '';
+                await getAIAnswer({ statement: context });
+            }
         }
     }
-    console.warn("State", miscState);
 
     return (
         <>
@@ -40,15 +86,16 @@ const Chat = () => {
                 bubblesCentered={false} //Boolean should the bubbles be centered in the feed?
                 bubbleStyles={styles.chatBubble} // JSON: Custom bubble styles
             />
-            <div className='msg-send' style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignSelf: 'center'
-            }}>
+            <div className='msg-send'>
                 <div className="msg-txt">
-                    <input type={'text'} onChange={onType} value={miscState?.newMessage || ''} placeholder={'Ask something'} />
+                    <input
+                        type={'text'}
+                        onChange={onType}
+                        value={miscState?.newMessage || ''}
+                        onKeyDown={handleKeyDown}
+                        placeholder={'Ask something'} />
                 </div>
-                <div className="msg-btn" style={{ marginLeft: 'auto', margin: 0 }}>
+                <div className="msg-btn" style={{ marginLeft: 'auto', margin: 0, display: 'none' }}>
                     <input
                         type="button"
                         className="fadeIn fourth"

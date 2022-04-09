@@ -9,6 +9,7 @@ const ListEngines = async ({ OPEN_AI_ORG, OPENAI_API_KEY }: ConfigObject) => {
     }
     catch (error) {
         console.warn("Error details: ", error);
+        return { error: 'Something went wrong' };
     }
 }
 export default ListEngines;
