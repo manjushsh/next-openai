@@ -2,7 +2,7 @@
 import { LoginState } from './index-d';
 
 const LogIn = ({ state, updateLogin }: any) => {
-    
+
     const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPEN_AI_ORG: e.target.value });
     const openAIAPIKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPENAI_API_KEY: e.target.value });
 
@@ -22,7 +22,10 @@ const LogIn = ({ state, updateLogin }: any) => {
                     updateLogin({ ...state, isLoggedIn: true });
                 }
             })
-            .catch(error => console.log('error', error));
+            .catch(error => {
+                alert(`Couldn't log you in! Please try again later.`);
+                console.log('error', error)
+            });
     }
 
     const isLoginDisabled = !(state?.OPEN_AI_ORG && state?.OPENAI_API_KEY);
