@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import LogIn from './login';
-import { LoginState } from './login/index-d';
+import LoginState from './login/index-d';
 import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {

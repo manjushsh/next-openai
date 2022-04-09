@@ -1,5 +1,5 @@
 
-import { LoginState } from './index-d';
+import LoginState from './index-d';
 
 const LogIn = ({ state, updateLogin }: any) => {
 
