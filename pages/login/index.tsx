@@ -12,7 +12,8 @@ const LogIn = ({ state, updateLogin }: any) => {
             headers,
             body,
         };
-        const finalURL = `http://${process?.env?.NEXT_PUBLIC_VERCEL_URL || 'localhost:3000'}/api/list-engines`;
+        // const finalURL = `http://${process?.env?.NEXT_PUBLIC_VERCEL_URL || 'localhost:3000'}/api/list-engines`;
+        const finalURL = `${window.location.protocol} + "//" + ${window.location.host}`
         console.warn('URL: ', finalURL);
         fetch(finalURL, requestData)
             .then(response => response.json())
