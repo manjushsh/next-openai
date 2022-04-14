@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import ListEngines from "./list-engines-v1";
+import ListEngines from "../../operations/list-engines-v1";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { OPEN_AI_ORG, OPENAI_API_KEY } = req.body;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ChatFeed, Message } from "react-chat-ui";
-import NavigationService from "../api/common/navigation";
+import NavigationService from "../../operations/common/navigation";
 
 const ID_WISE_USER = ['Human', 'AI'];
 
@@ -36,8 +36,7 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
             headers,
             body,
         };
-        const finalURL = `http://${process?.env?.NEXT_PUBLIC_VERCEL_URL || 'localhost:3000'}/api/chat`;
-        await fetch(finalURL, requestData)
+        await fetch(NavigationService.getApiEndPointURL({endPoint: 'chat'}), requestData)
             .then(response => response.json())
             .then((result: any) => {
                 const data = result?.data?.choices || null;
