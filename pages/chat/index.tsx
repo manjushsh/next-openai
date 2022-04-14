@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ChatFeed, Message } from "react-chat-ui";
-import NavigationService from "../api/common/navigation";
+import NavigationService from "../../operations/common/navigation";
 
 const ID_WISE_USER = ['Human', 'AI'];
 

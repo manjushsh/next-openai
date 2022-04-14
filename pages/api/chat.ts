@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import oneTimeChat from "./ot-chat";
+import oneTimeChat from "../../operations/ot-chat";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { configuration, statement }: AI_CONFIG_TYPE = req.body;
