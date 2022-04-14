@@ -13,6 +13,7 @@ const LogIn = ({ state, updateLogin }: any) => {
             body,
         };
         const finalURL = `http://${process?.env?.NEXT_PUBLIC_VERCEL_URL || 'localhost:3000'}/api/list-engines`;
+        console.warn('URL: ', finalURL);
         fetch(finalURL, requestData)
             .then(response => response.json())
             .then(result => {
