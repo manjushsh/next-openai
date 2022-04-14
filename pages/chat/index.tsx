@@ -25,7 +25,7 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
         }
     };
 
-    const getAIAnswer = async ({ statement = '' }: any) => {
+    const getAIAnswer = async ({ statement = '', currentMessages }: any) => {
         const headers = { "Content-Type": "application/json" };
         const body = JSON.stringify({
             configuration: { OPEN_AI_ORG, OPENAI_API_KEY },
@@ -36,15 +36,14 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
             headers,
             body,
         };
-        await fetch(NavigationService.getApiEndPointURL({endPoint: 'chat'}), requestData)
+        await fetch(NavigationService.getApiEndPointURL({ endPoint: 'chat' }), requestData)
             .then(response => response.json())
             .then((result: any) => {
                 const data = result?.data?.choices || null;
                 if (data && data.length > 0) {
                     const aiResponse = new Message({ id: 1, message: data[0].text, });
-                    const { messages } = miscState;
-                    messages.push(aiResponse);
-                    updateMiscState({ ...miscState, isTyping: false, newMessage: '', messages });
+                    currentMessages.push(aiResponse);
+                    updateMiscState({ ...miscState, isTyping: false, newMessage: '', messages: currentMessages });
                 }
             })
             .catch(error => console.log('error', error));
@@ -71,14 +70,15 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
             currentMessages.push(new Message({ id: 0, message: text, }));
             updateMiscState({ ...miscState, messages: currentMessages, newMessage: '', isTyping: true, aiResponse: null });
             updateScroll();
-            const { messages } = miscState;
             let context = '';
-            if (messages && messages.length > 0) {
-                context = Object.keys(messages).map(message => `${ID_WISE_USER[messages[message].id]}: ${messages[message].message}`).join('\n') || '';
-                await getAIAnswer({ statement: context });
+            if (currentMessages && currentMessages.length > 0) {
+                context = Object.keys(currentMessages).map(message => `${ID_WISE_USER[currentMessages[message].id]}: ${currentMessages[message].message}`).join('\n') || '';
+                await getAIAnswer({ statement: context, currentMessages });
                 updateScroll();
             }
+            console.warn('misc', miscState, text);
         }
+
     }
 
     return (
