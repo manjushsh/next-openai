@@ -4,12 +4,13 @@ import { useRouter } from 'next/router';
 import LogIn from './login';
 import styles from '../styles/Home.module.css';
 import NavigationService from '../operations/common/navigation';
+import { INFO_KEY } from '../operations/common/constants';
 
 
 const Home: NextPage = () => {
   const [miscState, updateMiscState] = useState<LoginState>({});
   useEffect(() => {
-    const geoAPIKey = 'd793d35493024d0290330a24e212e8e7';
+    const geoAPIKey = INFO_KEY;
     getDetails({ apiKey: geoAPIKey });
   });
 
