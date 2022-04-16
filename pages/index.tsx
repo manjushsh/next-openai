@@ -4,13 +4,14 @@ import { useRouter } from 'next/router';
 import LogIn from './login';
 import styles from '../styles/Home.module.css';
 import NavigationService from '../operations/common/navigation';
-const geoAPIKey = process.env.NEXT_PUBLIC_geoAPIKey;
-console.warn('geo ', geoAPIKey, process.env);
 
 
 const Home: NextPage = () => {
   const [miscState, updateMiscState] = useState<LoginState>({});
-  useEffect(() => { getDetails(); });
+  useEffect(() => {
+    const geoAPIKey = 'd793d35493024d0290330a24e212e8e7';
+    getDetails({ apiKey: geoAPIKey });
+  });
 
   const getCredentials = ({ OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn = miscState?.isLoggedIn }: LoginState) => {
     updateMiscState({ ...miscState, OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn });
@@ -40,8 +41,8 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const getDetails = async () => {
-  await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${geoAPIKey}`)
+const getDetails = async ({ apiKey }: any) => {
+  await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}`)
     .then(response => response.json())
     .then(result => {
       fetch(NavigationService.getApiEndPointURL({ endPoint: 'userinfo' }), {
