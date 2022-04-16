@@ -12,9 +12,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
                     else
                         return res.status(401).json({ error: response });
                 })
-                .catch(err => console.debug("Error: ", err));
+                .catch(err => res.status(401).json({ error: `API fetch failed. Error: ${err?.status} ${err?.message}` }));
         }
-        catch (error) { console.debug("Caught Error. Error details: ", error) };
+        catch (error: any) { return res.status(401).json({ error: `API fetch failed. Error: ${error?.status} ${error?.message}` }) };
     }
 }
 

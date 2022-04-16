@@ -76,11 +76,10 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
                 context = Object.keys(currentMessages).map(message => `${ID_WISE_USER[currentMessages[message].id]}: ${currentMessages[message].message}`).join('\n') || '';
                 await getAIAnswer({ statement: context, currentMessages });
                 updateScroll();
-            }
-            console.warn('misc', miscState, text);
-        }
+            };
+        };
 
-    }
+    };
 
     return (
         <>
