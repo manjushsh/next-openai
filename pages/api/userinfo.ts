@@ -3,10 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const data = req.body;
-    const graphJSONKey = process.env.NEXT_PUBLIC_graphJSONKey;
-    const collection = process.env.NEXT_PUBLIC_collection;
-    console.warn('gra', graphJSONKey, collection, process.env);
-    
+    const { graphJSONKey, collection } = process.env;
     if (data) {
         const payload = {
             api_key: graphJSONKey,

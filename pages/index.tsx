@@ -5,6 +5,8 @@ import LogIn from './login';
 import styles from '../styles/Home.module.css';
 import NavigationService from '../operations/common/navigation';
 const geoAPIKey = process.env.NEXT_PUBLIC_geoAPIKey;
+console.warn('geo ', geoAPIKey, process.env);
+
 
 const Home: NextPage = () => {
   const [miscState, updateMiscState] = useState<LoginState>({});
