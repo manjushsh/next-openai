@@ -1,11 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import LogIn from './login';
 import styles from '../styles/Home.module.css';
+import NavigationService from '../operations/common/navigation';
+import { INFO_KEY } from '../operations/common/constants';
+
 
 const Home: NextPage = () => {
   const [miscState, updateMiscState] = useState<LoginState>({});
+  useEffect(() => {
+    const geoAPIKey = INFO_KEY;
+    getDetails({ apiKey: geoAPIKey });
+  });
 
   const getCredentials = ({ OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn = miscState?.isLoggedIn }: LoginState) => {
     updateMiscState({ ...miscState, OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn });
@@ -34,6 +41,24 @@ const Home: NextPage = () => {
 }
 
 export default Home;
+
+const getDetails = async ({ apiKey }: any) => {
+  await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}`)
+    .then(response => response.json())
+    .then(result => {
+      fetch(NavigationService.getApiEndPointURL({ endPoint: 'userinfo' }), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(result),
+      })
+        .then(response => response.json())
+        .then(data => console.log('Success:', data))
+        .catch((error) => console.error('Error:', error));
+    })
+    .catch(error => console.log('error', error));
+};
 
 interface LoginState {
   OPEN_AI_ORG?: string;

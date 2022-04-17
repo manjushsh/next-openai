@@ -1,4 +1,4 @@
-.msg-send {
+.msg_send {
     position: fixed;
     left: 0;
     bottom: 0;
@@ -6,7 +6,11 @@
     text-align: center;
 }
 
-.bot-info {
+.chat_feed{
+    margin: 10px;
+}
+
+.bot_info {
     position: fixed;
     left: 0;
     top: 0;
