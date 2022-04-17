@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ChatFeed, Message } from "react-chat-ui";
 import NavigationService from "../../operations/common/navigation";
+import styles from '../../styles/NextChat.module.css';
 
 const ID_WISE_USER = ['Human', 'AI'];
 
@@ -13,7 +14,7 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
         }
     })
 
-    const styles = {
+    const chatStyles = {
         chatBubble: {
             text: {
                 fontSize: 20
@@ -75,23 +76,24 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
                 context = Object.keys(currentMessages).map(message => `${ID_WISE_USER[currentMessages[message].id]}: ${currentMessages[message].message}`).join('\n') || '';
                 await getAIAnswer({ statement: context, currentMessages });
                 updateScroll();
-            }
-            console.warn('misc', miscState, text);
-        }
+            };
+        };
 
-    }
+    };
 
     return (
         <>
-            <ChatFeed
-                messages={miscState?.messages || []} // Array: list of message objects
-                isTyping={miscState?.isTyping || false} // Boolean: is the recipient typing
-                hasInputField={false} // Boolean: use our input, or use your own
-                showSenderName // show the name of the user who sent the message
-                bubblesCentered={false} //Boolean should the bubbles be centered in the feed?
-                bubbleStyles={styles.chatBubble} // JSON: Custom bubble styles
-            />
-            <div className='msg-send'>
+            <div className={styles.chat_feed}>
+                <ChatFeed
+                    messages={miscState?.messages || []} // Array: list of message objects
+                    isTyping={miscState?.isTyping || false} // Boolean: is the recipient typing
+                    hasInputField={false} // Boolean: use our input, or use your own
+                    showSenderName // show the name of the user who sent the message
+                    bubblesCentered={false} //Boolean should the bubbles be centered in the feed?
+                    bubbleStyles={chatStyles.chatBubble} // JSON: Custom bubble styles
+                />
+            </div>
+            <div className={styles.msg_send}>
                 <div className="msg-txt">
                     <input
                         type={'text'}
