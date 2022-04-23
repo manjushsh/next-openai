@@ -1,3 +1,4 @@
+import Link from "next/link";
 import NavigationService from "../../operations/common/navigation";
 
 const LogIn = ({ state, updateLogin }: any) => {
@@ -13,7 +14,7 @@ const LogIn = ({ state, updateLogin }: any) => {
             headers,
             body,
         };
-        fetch(NavigationService.getApiEndPointURL({endPoint: 'list-engines'}), requestData)
+        fetch(NavigationService.getApiEndPointURL({ endPoint: 'list-engines' }), requestData)
             .then(response => response.json())
             .then(result => {
                 if (result?.data && result?.data.length > 0) {
@@ -43,7 +44,7 @@ const LogIn = ({ state, updateLogin }: any) => {
                             onClick={!isLoginDisabled ? () => onLogIn({ ...state }) : () => { }}
                         />
                     </form>
-
+                    <Link href={'test-page/page1'}><a>Go to Posts</a></Link><br /><br />
                 </div>
             </div>
         </>

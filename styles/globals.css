@@ -3,6 +3,7 @@
   --dark: #0F0235;
   --off-white: #F5F5F3;
   --lighter-blue: #56baed;
+  --background: var(--lighter-blue);
 
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -18,7 +19,7 @@
 
 html,
 body {
-  background: var(--lighter-blue);
+  background: var(--background);
   padding: 0;
   margin: 0;
   font-family: var(--default-font-family);
