@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Head from 'next/head';
 
 export default function FirstPost() {
-    document.documentElement.style.setProperty('--background', 'white');
+    // document.documentElement.style.setProperty('--background', 'white');
     return <>
         <Head>
             <title>First Post</title>
