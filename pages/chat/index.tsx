@@ -8,7 +8,7 @@ const ID_WISE_USER = ['Human', 'AI'];
 const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
     const [miscState, updateMiscState] = useState({}) as any;
     useEffect(() => {
-        if (!(OPEN_AI_ORG && OPENAI_API_KEY)) {
+        if (!OPENAI_API_KEY) {
             alert(`Couldn't get valid API keys. Please enter credentials again!`)
             NavigationService.navigateToRoot();
         }

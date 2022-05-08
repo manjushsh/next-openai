@@ -3,7 +3,7 @@ import oneTimeChat from "../../operations/ot-chat";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { configuration, statement }: AI_CONFIG_TYPE = req.body;
-    if (configuration.OPEN_AI_ORG && configuration.OPENAI_API_KEY) {
+    if (configuration.OPENAI_API_KEY) { // configuration.OPEN_AI_ORG
         try {
             await oneTimeChat({ configuration, statement })
                 .then(response => {
@@ -22,7 +22,7 @@ export default handler;
 
 interface AI_CONFIG_TYPE {
     configuration: {
-        OPEN_AI_ORG: string;
+        OPEN_AI_ORG?: string;
         OPENAI_API_KEY: string;
     }
     statement?: string;
