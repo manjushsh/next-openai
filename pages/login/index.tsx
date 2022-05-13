@@ -1,3 +1,4 @@
+import Link from "next/link";
 import NavigationService from "../../operations/common/navigation";
 
 const LogIn = ({ state, updateLogin }: any) => {
@@ -13,7 +14,7 @@ const LogIn = ({ state, updateLogin }: any) => {
             headers,
             body,
         };
-        fetch(NavigationService.getApiEndPointURL({endPoint: 'list-engines'}), requestData)
+        fetch(NavigationService.getApiEndPointURL({ endPoint: 'list-engines' }), requestData)
             .then(response => response.json())
             .then(result => {
                 if (result?.data && result?.data.length > 0) {
@@ -26,7 +27,7 @@ const LogIn = ({ state, updateLogin }: any) => {
             });
     }
 
-    const isLoginDisabled = !(state?.OPEN_AI_ORG && state?.OPENAI_API_KEY);
+    const isLoginDisabled = !state?.OPENAI_API_KEY;
     return (
         <>
             <div className="wrapper fadeInDown">
@@ -34,7 +35,7 @@ const LogIn = ({ state, updateLogin }: any) => {
                     <h2 className="active"> Sign In </h2>
 
                     <form>
-                        <input type="text" id="login" className="fadeIn second" name="login" placeholder="Enter organization ID" onChange={onOrganizationIdChange} />
+                        <input type="text" id="login" className="fadeIn second" name="login" placeholder="Enter organization ID (OPTIONAL)" onChange={onOrganizationIdChange} />
                         <input type="text" id="password" className="fadeIn third" name="key" placeholder="Enter open AI API key" onChange={openAIAPIKeyChange} />
                         <input
                             type="button"
@@ -43,7 +44,7 @@ const LogIn = ({ state, updateLogin }: any) => {
                             onClick={!isLoginDisabled ? () => onLogIn({ ...state }) : () => { }}
                         />
                     </form>
-
+                    <Link href={'test-page/page1'}><a>Go to Posts</a></Link><br /><br />
                 </div>
             </div>
         </>
