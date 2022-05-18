@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Select from "react-select";
 import NavigationService from "../../operations/common/navigation";
 
-const LogIn = ({ state, updateLogin }: any) => {
+const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
 
     const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPEN_AI_ORG: e.target.value });
     const openAIAPIKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPENAI_API_KEY: e.target.value });
@@ -18,7 +19,7 @@ const LogIn = ({ state, updateLogin }: any) => {
             .then(response => response.json())
             .then(result => {
                 if (result?.data && result?.data.length > 0) {
-                    updateLogin({ ...state, isLoggedIn: true });
+                    updateLogin({ ...state, isLoggedIn: true, engines: generateEngineOptions({ engines: result?.data }) });
                 }
             })
             .catch(error => {
@@ -28,6 +29,31 @@ const LogIn = ({ state, updateLogin }: any) => {
     }
 
     const isLoginDisabled = !state?.OPENAI_API_KEY;
+    const { isLoggedIn, canContinue } = state;
+
+    const generateEngineOptions = ({ engines = state.engines }) => {
+        const options: any = [];
+        if (engines) {
+            engines.forEach((engine: any) => {
+                options.push({
+                    label: engine.id,
+                    value: engine.id,
+                    ...engine,
+                });
+            });
+        }
+        return options;
+    }
+
+    const onUserLogin = () => {
+        if (!(isLoggedIn))
+            onLogIn({ ...state });
+        else if (isLoggedIn && !canContinue)
+            updateLogin({ ...state, canContinue: true });
+        else
+            navigateToChat({ isLoggedIn, canContinue });
+    }
+
     return (
         <>
             <div className="wrapper fadeInDown">
@@ -40,10 +66,13 @@ const LogIn = ({ state, updateLogin }: any) => {
                         <input
                             type="button"
                             className="fadeIn fourth"
-                            value={state?.isLoggedIn ? 'Checked In' : 'Continue'}
-                            onClick={!isLoginDisabled ? () => onLogIn({ ...state }) : () => { }}
+                            value={state?.isLoggedIn ? 'Continue' : 'Log In'}
+                            onClick={!isLoginDisabled ? () => onUserLogin() : () => { }}
                         />
                     </form>
+                    {
+                        isLoggedIn ? (<><SelectEngine list={state.engines} /></>) : ''
+                    }
                     <Link href={'test-page/page1'}><a>Go to Posts</a></Link><br /><br />
                 </div>
             </div>
@@ -52,6 +81,12 @@ const LogIn = ({ state, updateLogin }: any) => {
 }
 
 export default LogIn;
+
+const SelectEngine = ({ list, selectedEngine, updateEngineSelection }: EngineSelectionProps) => {
+    return <div className={'engine-selection-container'}>
+        <Select options={list} />
+    </div>
+}
 
 const CheckMark = ({ fill = "#198754", dimension = "32" }) => {
     return (
@@ -64,5 +99,13 @@ const CheckMark = ({ fill = "#198754", dimension = "32" }) => {
 interface LoginState {
     OPEN_AI_ORG?: string;
     OPENAI_API_KEY?: string;
-    isLoggedIn?: true | false;
+    isLoggedIn?: boolean;
+    canContinue?: boolean;
+};
+
+type selectedEngine = { label: string, value: number | string };
+interface EngineSelectionProps {
+    list?: selectedEngine[] | [];
+    selectedEngine?: selectedEngine;
+    updateEngineSelection?: any;
 };

@@ -4,22 +4,27 @@ import { useRouter } from 'next/router';
 import LogIn from './login';
 import styles from '../styles/Home.module.css';
 import NavigationService from '../operations/common/navigation';
-import { INFO_KEY } from '../operations/common/constants';
+import { INFO_URL } from '../operations/common/constants';
 
 
 const Home: NextPage = () => {
   const [miscState, updateMiscState] = useState<LoginState>({});
   useEffect(() => {
-    const geoAPIKey = INFO_KEY;
-    getDetails({ apiKey: geoAPIKey });
+    // getDetails();
   });
 
-  const getCredentials = ({ OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn = miscState?.isLoggedIn }: LoginState) => {
-    updateMiscState({ ...miscState, OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn });
+  const getCredentials = ({
+    OPEN_AI_ORG,
+    OPENAI_API_KEY,
+    isLoggedIn = miscState?.isLoggedIn,
+    canContinue = miscState?.canContinue,
+    engines = [],
+  }: LoginState) => {
+    updateMiscState({ ...miscState, OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn, canContinue, engines });
   };
 
-  const navigateToChat = ({ isLoggedIn = false }) => {
-    if (isLoggedIn) {
+  const navigateToChat = ({ isLoggedIn = false, canContinue = false }) => {
+    if (isLoggedIn && canContinue) {
       router.push({
         pathname: '/nxt-chat',
         query: { ...miscState },
@@ -27,14 +32,14 @@ const Home: NextPage = () => {
     }
   }
 
-  const { isLoggedIn } = miscState;
+  const { isLoggedIn, canContinue } = miscState;
   const router = useRouter();
-  navigateToChat({ isLoggedIn });
+  navigateToChat({ isLoggedIn, canContinue });
 
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        {!isLoggedIn ? <LogIn state={miscState} updateLogin={getCredentials} /> : ''}
+        {!(isLoggedIn && canContinue) ? <LogIn state={miscState} updateLogin={getCredentials} navigateToChat={navigateToChat} /> : ''}
       </main>
     </div>
   )
@@ -42,8 +47,8 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const getDetails = async ({ apiKey }: any) => {
-  await fetch(`https://api.ipgeolocation.io/ipgeo?apiKey=${apiKey}`)
+const getDetails = async () => {
+  await fetch(INFO_URL)
     .then(response => response.json())
     .then(result => {
       fetch(NavigationService.getApiEndPointURL({ endPoint: 'userinfo' }), {
@@ -64,4 +69,6 @@ interface LoginState {
   OPEN_AI_ORG?: string;
   OPENAI_API_KEY?: string;
   isLoggedIn?: true | false;
+  engines?: [];
+  canContinue?: boolean;
 };
