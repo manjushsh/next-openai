@@ -29,7 +29,6 @@ const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
     }
 
     const isLoginDisabled = !state?.OPENAI_API_KEY;
-    const { isLoggedIn, canContinue } = state;
 
     const generateEngineOptions = ({ engines = state.engines }) => {
         const options: any = [];
@@ -46,12 +45,12 @@ const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
     }
 
     const onUserLogin = () => {
-        if (!(isLoggedIn))
+        if (!(state?.isLoggedIn))
             onLogIn({ ...state });
-        else if (isLoggedIn && !canContinue)
+        else if (state?.isLoggedIn && !state?.canContinue)
             updateLogin({ ...state, canContinue: true });
         else
-            navigateToChat({ isLoggedIn, canContinue });
+            navigateToChat({ isLoggedIn: state?.isLoggedIn, canContinue: state?.canContinue });
     }
 
     return (
@@ -71,7 +70,7 @@ const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
                         />
                     </form>
                     {
-                        isLoggedIn ? (<><SelectEngine list={state.engines} /></>) : ''
+                        state?.isLoggedIn ? (<><SelectEngine list={state.engines} /></>) : ''
                     }
                     <Link href={'test-page/page1'}><a>Go to Posts</a></Link><br /><br />
                 </div>
