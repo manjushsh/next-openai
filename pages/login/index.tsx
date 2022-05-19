@@ -1,5 +1,7 @@
+import { useState } from "react";
 import Link from "next/link";
 import Select from "react-select";
+import { DEFAULT_ENGINE } from "../../operations/common/constants";
 import NavigationService from "../../operations/common/navigation";
 
 const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
@@ -81,9 +83,18 @@ const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
 
 export default LogIn;
 
-const SelectEngine = ({ list, selectedEngine, updateEngineSelection }: EngineSelectionProps) => {
+// Other components
+const SelectEngine = ({ list }: EngineSelectionProps) => {
+
+    const [engine]: any = list?.filter((l: any) => l.id === DEFAULT_ENGINE);
+    const [selectedEngine, updateEngineSelection] = useState(engine || null);
+
+    const handleChangeEngine = (option: any) => {
+        updateEngineSelection(option);
+    };
+
     return <div className={'engine-selection-container'}>
-        <Select options={list} />
+        <Select options={list} value={selectedEngine} onChange={handleChangeEngine} />
     </div>
 }
 
@@ -104,7 +115,7 @@ interface LoginState {
 
 type selectedEngine = { label: string, value: number | string };
 interface EngineSelectionProps {
-    list?: selectedEngine[] | [];
+    list?: selectedEngine[] | any;
     selectedEngine?: selectedEngine;
     updateEngineSelection?: any;
 };

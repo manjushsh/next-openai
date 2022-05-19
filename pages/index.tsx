@@ -10,7 +10,7 @@ import { INFO_URL } from '../operations/common/constants';
 const Home: NextPage = () => {
   const [miscState, updateMiscState] = useState<LoginState>({});
   useEffect(() => {
-    getDetails();
+    // getDetails();
   });
 
   const getCredentials = ({
