@@ -4,7 +4,7 @@ import Select from "react-select";
 import { DEFAULT_ENGINE } from "../../operations/common/constants";
 import NavigationService from "../../operations/common/navigation";
 
-const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
+const LogIn = ({ state, updateLogin, navigateToChat, engine, updateEngine }: any) => {
 
     const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPEN_AI_ORG: e.target.value });
     const openAIAPIKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPENAI_API_KEY: e.target.value });
@@ -32,15 +32,19 @@ const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
 
     const isLoginDisabled = !state?.OPENAI_API_KEY;
 
+    const isValidEngine = (engine: Engine) => String(engine?.id).startsWith('text') && engine?.id.split('-').length <= 3;
+
     const generateEngineOptions = ({ engines = state.engines }) => {
         const options: any = [];
         if (engines) {
             engines.forEach((engine: any) => {
-                options.push({
-                    label: engine.id,
-                    value: engine.id,
-                    ...engine,
-                });
+                if (isValidEngine(engine)) {
+                    options.push({
+                        label: engine.id,
+                        value: engine.id,
+                        ...engine,
+                    });
+                }
             });
         }
         return options;
@@ -52,7 +56,7 @@ const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
         else if (state?.isLoggedIn && !state?.canContinue)
             updateLogin({ ...state, canContinue: true });
         else
-            navigateToChat({ isLoggedIn: state?.isLoggedIn, canContinue: state?.canContinue });
+            navigateToChat({ isLoggedIn: state?.isLoggedIn, canContinue: state?.canContinue, engine: engine?.id });
     }
 
     return (
@@ -72,7 +76,7 @@ const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
                         />
                     </form>
                     {
-                        state?.isLoggedIn ? (<><SelectEngine list={state.engines} /></>) : ''
+                        state?.isLoggedIn ? (<><SelectEngine list={state.engines} engine={engine} updateEngine={updateEngine} /></>) : ''
                     }
                     <Link href={'test-page/page1'}><a>Go to Posts</a></Link><br /><br />
                 </div>
@@ -84,17 +88,19 @@ const LogIn = ({ state, updateLogin, navigateToChat }: any) => {
 export default LogIn;
 
 // Other components
-const SelectEngine = ({ list }: EngineSelectionProps) => {
+const SelectEngine = ({ list, engine, updateEngine }: EngineSelectionProps) => {
 
-    const [engine]: any = list?.filter((l: any) => l.id === DEFAULT_ENGINE);
-    const [selectedEngine, updateEngineSelection] = useState(engine || null);
+    const [selectedEngine]: any = list?.filter((l: any) => l.id === DEFAULT_ENGINE);
+    if (!engine && selectedEngine) {
+        updateEngine(selectedEngine);
+    }
 
     const handleChangeEngine = (option: any) => {
-        updateEngineSelection(option);
+        updateEngine(option);
     };
 
     return <div className={'engine-selection-container'}>
-        <Select options={list} value={selectedEngine} onChange={handleChangeEngine} />
+        <Select options={list} value={engine || selectedEngine} onChange={handleChangeEngine} />
     </div>
 }
 
@@ -114,8 +120,9 @@ interface LoginState {
 };
 
 type selectedEngine = { label: string, value: number | string };
+type Engine = { id: string };
 interface EngineSelectionProps {
     list?: selectedEngine[] | any;
-    selectedEngine?: selectedEngine;
-    updateEngineSelection?: any;
+    engine?: selectedEngine;
+    updateEngine?: any;
 };

@@ -5,7 +5,7 @@ import styles from '../../styles/NextChat.module.css';
 
 const ID_WISE_USER = ['Human', 'AI'];
 
-const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
+const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY, model }: API_AUTH) => {
     const [miscState, updateMiscState] = useState({}) as any;
     useEffect(() => {
         if (!OPENAI_API_KEY) {
@@ -31,6 +31,7 @@ const Chat = ({ OPEN_AI_ORG, OPENAI_API_KEY }: API_AUTH) => {
         const body = JSON.stringify({
             configuration: { OPEN_AI_ORG, OPENAI_API_KEY },
             statement,
+            model,
         });
         const requestData = {
             method: 'POST',
@@ -121,4 +122,5 @@ export default Chat;
 interface API_AUTH {
     OPEN_AI_ORG?: string;
     OPENAI_API_KEY?: string;
+    model?: string;
 }

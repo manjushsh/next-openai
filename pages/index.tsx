@@ -4,13 +4,13 @@ import { useRouter } from 'next/router';
 import LogIn from './login';
 import styles from '../styles/Home.module.css';
 import NavigationService from '../operations/common/navigation';
-import { INFO_URL } from '../operations/common/constants';
+import { DEFAULT_ENGINE, INFO_URL } from '../operations/common/constants';
 
 
 const Home: NextPage = () => {
   const [miscState, updateMiscState] = useState<LoginState>({});
   useEffect(() => {
-    getDetails();
+    // getDetails();
   });
 
   const getCredentials = ({
@@ -23,23 +23,31 @@ const Home: NextPage = () => {
     updateMiscState({ ...miscState, OPEN_AI_ORG, OPENAI_API_KEY, isLoggedIn, canContinue, engines });
   };
 
-  const navigateToChat = ({ isLoggedIn = false, canContinue = false }) => {
+  const navigateToChat = ({ isLoggedIn = false, canContinue = false, engine = DEFAULT_ENGINE }) => {
     if (isLoggedIn && canContinue) {
       router.push({
         pathname: '/nxt-chat',
-        query: { ...miscState },
+        query: { ...miscState, engine },
       }, '/nxt-chat');
     }
   }
 
   const { isLoggedIn, canContinue } = miscState;
+  const [engineSelected, updateEngine] = useState(null) as any;
+  const updateEngineSelection = (option: any) => updateEngine(option);
   const router = useRouter();
-  navigateToChat({ isLoggedIn, canContinue });
+  navigateToChat({ isLoggedIn, canContinue, engine: engineSelected?.id });
+
 
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        {!(isLoggedIn && canContinue) ? <LogIn state={miscState} updateLogin={getCredentials} navigateToChat={navigateToChat} /> : ''}
+        {!(isLoggedIn && canContinue) ? <LogIn
+          state={miscState}
+          engine={engineSelected}
+          updateEngine={updateEngineSelection}
+          updateLogin={getCredentials}
+          navigateToChat={navigateToChat} /> : ''}
       </main>
     </div>
   )
@@ -59,7 +67,7 @@ const getDetails = async () => {
         body: JSON.stringify(result),
       })
         .then(response => response.json())
-        .then(data => console.log('Success:', data))
+        .then(data => console.debug('Success!', data))
         .catch((error) => console.error('Error:', error));
     })
     .catch(error => console.log('error', error));

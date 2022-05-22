@@ -8,7 +8,7 @@ const NextChat: NextPage = () => {
     return (
         <div>
             <main>
-                <Chat OPENAI_API_KEY={query?.OPENAI_API_KEY} OPEN_AI_ORG={query?.OPEN_AI_ORG} />
+                <Chat OPENAI_API_KEY={query?.OPENAI_API_KEY} OPEN_AI_ORG={query?.OPEN_AI_ORG} model={query?.engine} />
             </main>
         </div>
     )
