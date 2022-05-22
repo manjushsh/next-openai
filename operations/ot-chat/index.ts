@@ -1,4 +1,5 @@
 import OpenAIConfig from '../common/config-ai';
+import { DEFAULT_ENGINE } from '../common/constants';
 
 const defaultParameters = {
     temperature: 0,
@@ -8,7 +9,7 @@ const defaultParameters = {
     presence_penalty: 0.0,
 };
 
-const oneTimeChat = async ({ configuration, statement = '', model = 'text-davinci-002' }: AI_CONFIG_TYPE) => {
+const oneTimeChat = async ({ configuration, statement = '', model = DEFAULT_ENGINE }: AI_CONFIG_TYPE) => {
 
     const OpenAI = OpenAIConfig.configure({ apiKey: configuration.OPENAI_API_KEY, organization: configuration.OPEN_AI_ORG });
     try {
