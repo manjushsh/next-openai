@@ -2,10 +2,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 import oneTimeChat from "../../operations/ot-chat";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    const { configuration, statement }: AI_CONFIG_TYPE = req.body;
+    const { configuration, statement, model }: AI_CONFIG_TYPE = req.body;
+
     if (configuration.OPENAI_API_KEY) { // configuration.OPEN_AI_ORG
         try {
-            await oneTimeChat({ configuration, statement })
+            await oneTimeChat({ configuration, statement, model })
                 .then(response => {
                     if (response?.choices && response.choices.length > 0)
                         return res.status(200).json({ data: response });

@@ -1,7 +1,10 @@
+import { useState } from "react";
 import Link from "next/link";
+import Select from "react-select";
+import { DEFAULT_ENGINE } from "../../operations/common/constants";
 import NavigationService from "../../operations/common/navigation";
 
-const LogIn = ({ state, updateLogin }: any) => {
+const LogIn = ({ state, updateLogin, navigateToChat, engine, updateEngine }: any) => {
 
     const onOrganizationIdChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPEN_AI_ORG: e.target.value });
     const openAIAPIKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => updateLogin({ ...state, OPENAI_API_KEY: e.target.value });
@@ -18,7 +21,7 @@ const LogIn = ({ state, updateLogin }: any) => {
             .then(response => response.json())
             .then(result => {
                 if (result?.data && result?.data.length > 0) {
-                    updateLogin({ ...state, isLoggedIn: true });
+                    updateLogin({ ...state, isLoggedIn: true, engines: generateEngineOptions({ engines: result?.data }) });
                 }
             })
             .catch(error => {
@@ -28,6 +31,34 @@ const LogIn = ({ state, updateLogin }: any) => {
     }
 
     const isLoginDisabled = !state?.OPENAI_API_KEY;
+
+    const isValidEngine = (engine: Engine) => String(engine?.id).startsWith('text') && engine?.id.split('-').length <= 3;
+
+    const generateEngineOptions = ({ engines = state.engines }) => {
+        const options: any = [];
+        if (engines) {
+            engines.forEach((engine: any) => {
+                if (isValidEngine(engine)) {
+                    options.push({
+                        label: engine.id,
+                        value: engine.id,
+                        ...engine,
+                    });
+                }
+            });
+        }
+        return options;
+    }
+
+    const onUserLogin = () => {
+        if (!(state?.isLoggedIn))
+            onLogIn({ ...state });
+        else if (state?.isLoggedIn && !state?.canContinue)
+            updateLogin({ ...state, canContinue: true });
+        else
+            navigateToChat({ isLoggedIn: state?.isLoggedIn, canContinue: state?.canContinue, engine: engine?.id });
+    }
+
     return (
         <>
             <div className="wrapper fadeInDown">
@@ -40,10 +71,13 @@ const LogIn = ({ state, updateLogin }: any) => {
                         <input
                             type="button"
                             className="fadeIn fourth"
-                            value={state?.isLoggedIn ? 'Checked In' : 'Continue'}
-                            onClick={!isLoginDisabled ? () => onLogIn({ ...state }) : () => { }}
+                            value={state?.isLoggedIn ? 'Continue' : 'Log In'}
+                            onClick={!isLoginDisabled ? () => onUserLogin() : () => { }}
                         />
                     </form>
+                    {
+                        state?.isLoggedIn ? (<><SelectEngine list={state.engines} engine={engine} updateEngine={updateEngine} /></>) : ''
+                    }
                     <Link href={'test-page/page1'}><a>Go to Posts</a></Link><br /><br />
                 </div>
             </div>
@@ -52,6 +86,23 @@ const LogIn = ({ state, updateLogin }: any) => {
 }
 
 export default LogIn;
+
+// Other components
+const SelectEngine = ({ list, engine, updateEngine }: EngineSelectionProps) => {
+
+    const [selectedEngine]: any = list?.filter((l: any) => l.id === DEFAULT_ENGINE);
+    if (!engine && selectedEngine) {
+        updateEngine(selectedEngine);
+    }
+
+    const handleChangeEngine = (option: any) => {
+        updateEngine(option);
+    };
+
+    return <div className={'engine-selection-container'}>
+        <Select options={list} value={engine || selectedEngine} onChange={handleChangeEngine} />
+    </div>
+}
 
 const CheckMark = ({ fill = "#198754", dimension = "32" }) => {
     return (
@@ -64,5 +115,14 @@ const CheckMark = ({ fill = "#198754", dimension = "32" }) => {
 interface LoginState {
     OPEN_AI_ORG?: string;
     OPENAI_API_KEY?: string;
-    isLoggedIn?: true | false;
+    isLoggedIn?: boolean;
+    canContinue?: boolean;
+};
+
+type selectedEngine = { label: string, value: number | string };
+type Engine = { id: string };
+interface EngineSelectionProps {
+    list?: selectedEngine[] | any;
+    engine?: selectedEngine;
+    updateEngine?: any;
 };
