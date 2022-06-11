@@ -13,7 +13,8 @@ const oneTimeChat = async ({ configuration, statement = '', model = DEFAULT_ENGI
 
     const OpenAI = OpenAIConfig.configure({ apiKey: configuration.OPENAI_API_KEY, organization: configuration.OPEN_AI_ORG });
     try {
-        const response = await OpenAI.createCompletion(model, {
+        const response = await OpenAI.createCompletion({
+            model,
             prompt: statement,
             ...defaultParameters,
         });

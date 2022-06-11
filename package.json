@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "next": "12.1.4",
-    "openai": "^2.0.5",
+    "openai": "^3.0.0",
     "react": "18.0.0",
     "react-chat-ui": "^0.4.0",
     "react-dom": "18.0.0",
