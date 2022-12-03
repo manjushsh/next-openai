@@ -28,7 +28,6 @@ const Home: NextPage = () => {
     }
   };
 
-  console.warn("State", state?.common);
   const isLoggedIn = state?.common?.isLoggedIn || false
   const canContinue = state?.common?.canContinue || false
   const [engineSelected, updateEngine] = useState(null) as any;
