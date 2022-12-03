@@ -7,7 +7,7 @@ import styles from "../../styles/NextChat.module.css";
 const ID_WISE_USER = ["Human", "AI"];
 
 const Chat = ({ model }: API_AUTH) => {
-  const { state, setState } = useContext(GlobalStateContext)
+  const { state, setState } = useContext(GlobalStateContext);
   useEffect(() => {
     if (!state?.OPENAI_CREDENTIALS?.OPENAI_API_KEY) {
       alert(`Couldn't get valid API keys. Please enter credentials again!`);
@@ -30,7 +30,10 @@ const Chat = ({ model }: API_AUTH) => {
   const getAIAnswer = async ({ statement = "", currentMessages }: any) => {
     const headers = { "Content-Type": "application/json" };
     const body = JSON.stringify({
-      configuration: { OPEN_AI_ORG: state?.OPENAI_CREDENTIALS?.OPEN_AI_ORG, OPENAI_API_KEY: state?.OPENAI_CREDENTIALS?.OPENAI_API_KEY },
+      configuration: {
+        OPEN_AI_ORG: state?.OPENAI_CREDENTIALS?.OPEN_AI_ORG,
+        OPENAI_API_KEY: state?.OPENAI_CREDENTIALS?.OPENAI_API_KEY,
+      },
       statement,
       model,
     });
@@ -49,11 +52,14 @@ const Chat = ({ model }: API_AUTH) => {
         if (data && data.length > 0) {
           const aiResponse = new Message({ id: 1, message: data[0].text });
           currentMessages.push(aiResponse);
-          setState({
-            isTyping: false,
-            newMessage: "",
-            messages: currentMessages,
-          }, "chat");
+          setState(
+            {
+              isTyping: false,
+              newMessage: "",
+              messages: currentMessages,
+            },
+            "chat"
+          );
         }
       })
       .catch((error) => console.log("error", error));
@@ -77,12 +83,15 @@ const Chat = ({ model }: API_AUTH) => {
     } else {
       const currentMessages = state?.chat?.messages || [];
       currentMessages.push(new Message({ id: 0, message: text }));
-      setState({
-        messages: currentMessages,
-        newMessage: "",
-        isTyping: true,
-        aiResponse: null,
-      }, "chat");
+      setState(
+        {
+          messages: currentMessages,
+          newMessage: "",
+          isTyping: true,
+          aiResponse: null,
+        },
+        "chat"
+      );
       updateScroll();
       let context = "";
       if (currentMessages && currentMessages.length > 0) {
@@ -90,7 +99,8 @@ const Chat = ({ model }: API_AUTH) => {
           Object.keys(currentMessages)
             .map(
               (message) =>
-                `${ID_WISE_USER[currentMessages[message].id]}: ${currentMessages[message].message
+                `${ID_WISE_USER[currentMessages[message].id]}: ${
+                  currentMessages[message].message
                 }`
             )
             .join("\n") || "";

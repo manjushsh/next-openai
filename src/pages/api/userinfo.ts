@@ -18,11 +18,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       return res.status(200).json({ data: response });
     } catch (error: any) {
-      return res
-        .status(401)
-        .json({
-          error: `API fetch failed. Error: ${error?.status} ${error?.message}`,
-        });
+      return res.status(401).json({
+        error: `API fetch failed. Error: ${error?.status} ${error?.message}`,
+      });
     }
   }
 };

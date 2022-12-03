@@ -8,7 +8,7 @@ const CommonFunctions = {
       [value]: text?.toLowerCase()?.replace(" ", "-") || "",
     };
   },
-  isValidNumber: (value) => {
+  isValidNumber: (value: string) => {
     const parsedValue = parseFloat(value);
     return !isNaN(parsedValue) && isFinite(parsedValue);
   },

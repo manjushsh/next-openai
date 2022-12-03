@@ -12,11 +12,11 @@ const Home: NextPage = () => {
     getDetails();
   }, []);
 
-  const { state } = useContext(GlobalStateContext)
+  const { state } = useContext(GlobalStateContext);
 
   const navigateToChat = ({ engine = DEFAULT_ENGINE }) => {
-    const isLoggedIn = state?.common?.isLoggedIn || false
-    const canContinue = state?.common?.canContinue || false
+    const isLoggedIn = state?.common?.isLoggedIn || false;
+    const canContinue = state?.common?.canContinue || false;
     if (isLoggedIn && canContinue) {
       router.push(
         {
@@ -28,8 +28,8 @@ const Home: NextPage = () => {
     }
   };
 
-  const isLoggedIn = state?.common?.isLoggedIn || false
-  const canContinue = state?.common?.canContinue || false
+  const isLoggedIn = state?.common?.isLoggedIn || false;
+  const canContinue = state?.common?.canContinue || false;
   const [engineSelected, updateEngine] = useState(null) as any;
   const updateEngineSelection = (option: any) => updateEngine(option);
   const router = useRouter();

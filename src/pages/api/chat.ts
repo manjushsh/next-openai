@@ -14,18 +14,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           else return res.status(401).json({ error: response });
         })
         .catch((err) =>
-          res
-            .status(401)
-            .json({
-              error: `API fetch failed. Error: ${err?.status} ${err?.message}`,
-            })
+          res.status(401).json({
+            error: `API fetch failed. Error: ${err?.status} ${err?.message}`,
+          })
         );
     } catch (error: any) {
-      return res
-        .status(401)
-        .json({
-          error: `API fetch failed. Error: ${error?.status} ${error?.message}`,
-        });
+      return res.status(401).json({
+        error: `API fetch failed. Error: ${error?.status} ${error?.message}`,
+      });
     }
   }
 };

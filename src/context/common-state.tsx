@@ -54,5 +54,5 @@ export interface GlobalState {
   OPENAI_CREDENTIALS?: {
     OPENAI_API_KEY: string;
     OPEN_AI_ORG: string;
-  }
+  };
 }
