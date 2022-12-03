@@ -8,9 +8,9 @@ import { DEFAULT_ENGINE, INFO_URL } from "../operations/common/constants";
 import { GlobalStateContext } from "../context/common-state";
 
 const Home: NextPage = () => {
-  // useEffect(() => {
-  //   getDetails();
-  // }, []);
+  useEffect(() => {
+    getDetails();
+  }, []);
 
   const { state } = useContext(GlobalStateContext)
 
